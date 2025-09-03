@@ -35,6 +35,13 @@ a {
   text-decoration: none;
 }
 
+.flex {
+  display: flex;
+}
+.f-column {
+  flex-direction: column;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
