@@ -54,5 +54,6 @@ export default async function getLLMResponse(webPage, question) {
     input: question,
   });
 
+  console.log("check answer", res.answer);
   return res.answer;
 }
