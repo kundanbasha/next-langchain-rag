@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { ChatHeader } from "../ChatHeader";
 import { ChatInput } from "../ChatInput";
@@ -34,7 +33,46 @@ export default function Chat() {
 
     setMessages((prev) => [...prev, thinkingMessage]);
 
-    const res = await getLLMResponse(url, content);
+    let res = "";
+    if (url) {
+      try {
+        const response = await fetch("/api/process-web", {
+          method: "POST",
+          body: JSON.stringify({ url, question: content }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          res = result.data;
+        } else {
+          setIsLoading(false);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      const formData = new FormData();
+      formData.append("pdfFile", files[0]);
+      formData.append("question", content);
+
+      try {
+        const response = await fetch("/api/process-pdf", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          res = result.data;
+        } else {
+          setIsLoading(false);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
     const aiResponse = {
       id: (Date.now() + 2).toString(),
       content: res,
